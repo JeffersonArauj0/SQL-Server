@@ -1,0 +1,7 @@
+CREATE  TRIGGER [dbo].[TRG_DELPEDIDO]
+    ON [dbo].[Pedido]
+    FOR DELETE
+AS
+    INSERT INTO DelPedido
+    Select GetDate(), *
+    FROM DELETED
