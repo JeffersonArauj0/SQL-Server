@@ -1,0 +1,18 @@
+------------------------------------- INCLUSAO TABELA PEDIDO -----------------------------------------------------------------------------------------------------------------
+
+CREATE TRIGGER [dbo].[TRG_INC_PEDIDO_EXPORT_PDV_LOCAL] ON [dbo].[Pedido] FOR INSERT AS
+
+	DECLARE @IntNUMERO INT,
+			@InPEDIDO INT,
+			@INTEGRAÇÃO INT
+
+  SELECT @IntNUMERO = INSERTED.NUMERO FROM INSERTED JOIN PEDIDO ON PEDIDO.NUMERO = INSERTED.NUMERO
+	
+  IF (SELECT NumeroLoja FROM inserted WHERE NUMERO = @IntNUMERO) = 0 AND (SELECT NumeroLoja FROM inserted WHERE NUMERO = @IntNUMERO) IS NOT NULL 
+  	UPDATE PEDIDO SET NumeroLoja = Numero WHERE NUMERO = @IntNUMERO	
+
+  IF (SELECT PedidoLoja FROM inserted WHERE NUMERO = @IntNUMERO) = 0 AND (SELECT PedidoLoja FROM inserted WHERE NUMERO = @IntNUMERO) IS NOT NULL 
+	  UPDATE PEDIDO SET PedidoLoja = Pedido WHERE NUMERO = @IntNUMERO	
+
+  IF (SELECT EnviarLoja FROM inserted WHERE NUMERO = @IntNUMERO) <> 'S' AND (SELECT EnviarLoja FROM inserted WHERE NUMERO = @IntNUMERO) IS NOT NULL 
+	  UPDATE PEDIDO SET EnviarLoja = 'S' WHERE NUMERO = @IntNUMERO
